@@ -1,4 +1,4 @@
-import {addBit, hasAnyOfBits, hasBit, removeBit, toggleAllBits, toggleBit} from "./bitmask";
+import {addBit, hasAnyOfBits, hasBit, removeBit, toggleAllBits, toggleBit} from "./bitmask.ts";
 
 const FIRST = 1n << 0n;
 const SECOND = 1n << 1n;
