@@ -1,0 +1,34 @@
+{
+  "name": "@serbanghita-gamedev/bitmask",
+  "description": "Bitwise operations for working with bitmasks",
+  "keywords": ["bitwise", "bitmask"],
+  "version": "1.0.1",
+  "author": "Serban Ghita <serbanghita@gmail.com> (https://ghita.org)",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "main": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild ./src/index.ts --bundle --outfile=dist/bitmask.js",
+    "test": "vitest --watch=false --coverage",
+    "lint": "eslint ./src",
+    "prepare": "husky",
+    "release:minor": "npm version minor && git push && git push --tags && npm publish"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.26.0",
+    "@types/node": "^22.15.17",
+    "@vitest/coverage-istanbul": "3.1.3",
+    "esbuild": "0.25.4",
+    "eslint": "9.26.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "8.32.0",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.1.3"
+  }
+}
