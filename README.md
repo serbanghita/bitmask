@@ -1,6 +1,8 @@
 # Bitmask
 > Bitwise operations for bitmasks and general purposes.
 
+[![Node.js CI](https://github.com/serbanghita/bitmask/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/serbanghita/bitmask/actions/workflows/node.js.yml)
+
 | Operation       | Description                                       |
 |-----------------|---------------------------------------------------|
 | `addBit`        | Adds bit to the bitmask.                          |
