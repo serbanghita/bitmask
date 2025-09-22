@@ -1,8 +1,11 @@
 {
   "name": "@serbanghita-gamedev/bitmask",
   "description": "Bitwise operations for working with bitmasks",
-  "keywords": ["bitwise", "bitmask"],
-  "version": "1.0.1",
+  "keywords": [
+    "bitwise",
+    "bitmask"
+  ],
+  "version": "1.1.0",
   "author": "Serban Ghita <serbanghita@gmail.com> (https://ghita.org)",
   "license": "MIT",
   "publishConfig": {
