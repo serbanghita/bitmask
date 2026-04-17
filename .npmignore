@@ -16,3 +16,8 @@ CLAUDE.md
 
 # Coverage
 coverage/
+
+# IDE / editor / local settings
+.idea/
+.vscode/
+.claude/
