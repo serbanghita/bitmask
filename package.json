@@ -19,7 +19,8 @@
     "test": "vitest --watch=false --coverage",
     "lint": "eslint ./src",
     "prepare": "husky",
-    "release:minor": "npm version minor && git push && git push --tags && npm publish"
+    "release:minor": "npm version minor && git push && git push --tags && npm publish",
+    "bench": "vitest bench --run"
   },
   "devDependencies": {
     "@eslint/js": "9.26.0",

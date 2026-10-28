@@ -16,7 +16,7 @@ test('addBit', () => {
     expect(getBinStr(addBit(0n, FIRST))).toEqual(getBinStr(0b1));
     expect(getBinStr(addBit(0n, SECOND))).toEqual(getBinStr(0b10));
     expect(getBinStr(addBit(1n, FIFTY_TWO))).toEqual(getBinStr(0b10000000000000000000000000000000000000000000000000001));
-    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+    // eslint-disable-next-line no-loss-of-precision
     expect(getBinStr(addBit(1n, FIFTY_THREE))).not.toEqual(0b100000000000000000000000000000000000000000000000000001);
     expect(getBinStr(addBit(1n, FIFTY_THREE))).toEqual('100000000000000000000000000000000000000000000000000001');
 });

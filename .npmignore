@@ -21,3 +21,6 @@ coverage/
 .idea/
 .vscode/
 .claude/
+
+# Benchmarks
+src/**/*.bench.ts

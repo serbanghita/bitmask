@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Uint32Array bitset API: `createBitset`, `bitsetFromIndices`, `bitsetCapacity`, `setBit`, `clearBit`, `flipBit`, `testBit`, `hasAllBits`, `hasAnyBits`, `isBitsetEmpty`, `bitsetEquals`, `clearBitset`, `cloneBitset`, `bitsetToString` and the `Bitset` type
+- `npm run bench` — vitest benchmarks comparing BigInt masks against Uint32Array bitsets on ECS-shaped workloads (serbanghita/ecs#10)
+
+### Fixed
+- Wrong eslint-disable rule name in `bitmask.test.ts` that made `npm run lint` fail
+
 ## [1.2.0] - 2026-04-17
 
 ### Fixed
