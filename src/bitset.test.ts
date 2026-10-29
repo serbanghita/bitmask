@@ -147,3 +147,20 @@ test('testBit returns false for invalid indices', () => {
     expect(testBit(bitset, -0)).toBe(true);
     expect(testBit(bitset, 0)).toBe(true);
 });
+
+test('hasAllBits / hasAnyBits accept different lengths, equals does not', () => {
+    const wide = fromIndices([1, 40], 64);
+    const narrow = fromIndices([1], 32);
+    const narrowMiss = fromIndices([2], 32);
+    const wider = fromIndices([1, 70], 96);
+
+    expect(hasAllBits(wide, narrow)).toBe(true);
+    expect(hasAllBits(wide, narrowMiss)).toBe(false);
+    expect(hasAllBits(wide, wider)).toBe(false);
+    expect(hasAllBits(narrow, wide)).toBe(false);
+    expect(hasAnyBits(wide, narrow)).toBe(true);
+    expect(hasAnyBits(wide, narrowMiss)).toBe(false);
+    expect(hasAnyBits(wide, wider)).toBe(true);
+    expect(hasAnyBits(narrow, wide)).toBe(true);
+    expect(equals(wide, fromIndices([1, 40], 96))).toBe(false);
+});

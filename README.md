@@ -3,72 +3,111 @@
 
 [![Node.js CI](https://github.com/serbanghita/bitmask/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/serbanghita/bitmask/actions/workflows/node.js.yml)
 
-Two representations are provided:
+Two representations are provided, each under its own namespace:
 
-- **BigInt masks** — a single arbitrary-precision integer, one bit per flag. Simple, unbounded, allocates on every mutation.
-- **Uint32Array bitsets** — a fixed-capacity array of 32-bit words, addressed by bit index. Mutates in place, no allocations, 2-3x faster than BigInt past 64 bits (see [Benchmarks](#benchmarks)).
-
-## BigInt masks
-
-| Operation       | Description                                       |
-|-----------------|---------------------------------------------------|
-| `addBit`        | Adds bit to the bitmask.                          |
-| `removeBit`     | Remove bit from bitmask.                          |
-| `hasBit`        | Check if a bit already exists in the bitmask.     |
-| `hasAnyOfBits`  | Check if the bitmask contains any of the bits.    |
-| `toggleBit`     | Toggle existing/non-existing bits in the bitmask. |
-| `toggleAllBits` | Toggle all bits in the bitmask                    |
+- **`bigint`**: BigInt masks. A single arbitrary-precision integer, one bit per flag. Simple, unbounded, returns a new value on every change.
+- **`bitset`**: Uint32Array bitsets. A fixed-capacity array of 32-bit words, addressed by bit index. Mutates in place, no allocations, 2-3x faster than BigInt past 64 bits (see [Benchmarks](#benchmarks)).
 
 ```ts
-import { addBit, hasBit } from "@serbanghita-gamedev/bitmask";
+import { bigint, bitset } from "@serbanghita-gamedev/bitmask";
+```
+
+## `bigint`: BigInt masks
+
+| Operation              | Description                                       |
+|------------------------|---------------------------------------------------|
+| `bigint.addBit`        | Adds bit to the bitmask.                          |
+| `bigint.removeBit`     | Remove bit from bitmask.                          |
+| `bigint.hasBit`        | Check if a bit already exists in the bitmask.     |
+| `bigint.hasAnyOfBits`  | Check if the bitmask contains any of the bits.    |
+| `bigint.toggleBit`     | Toggle existing/non-existing bits in the bitmask. |
+| `bigint.toggleAllBits` | Toggle all bits in the bitmask.                   |
+| `bigint.Bitmask`       | Type: `number \| bigint`.                         |
+
+```ts
+import { bigint } from "@serbanghita-gamedev/bitmask";
 
 const CAN_WALK = 1n << 0n;
 const CAN_FLY = 1n << 1n;
 
 let mask = 0n;
-mask = addBit(mask, CAN_WALK);
-hasBit(mask, CAN_WALK); // true
-hasBit(mask, CAN_FLY);  // false
+mask = bigint.addBit(mask, CAN_WALK);
+bigint.hasBit(mask, CAN_WALK); // true
+bigint.hasBit(mask, CAN_FLY);  // false
 ```
 
-## Uint32Array bitsets
+## `bitset`: Uint32Array bitsets
 
 Bits are addressed by index (`0, 1, 2, ...`). Index `i` lives in word `i >>> 5` at position `i & 31`.
-Bitsets compared with each other must be created with the same capacity.
 
-| Operation             | Description                                                      |
-|-----------------------|------------------------------------------------------------------|
-| `createBitset`        | Create an empty bitset with room for `capacity` bits.            |
-| `bitsetFromIndices`   | Create a bitset with the given bit indices set.                  |
-| `bitsetCapacity`      | Number of bits the bitset can hold (rounded up to 32).           |
-| `setBit`              | Set the bit at `index` (in place).                               |
-| `clearBit`            | Clear the bit at `index` (in place).                             |
-| `flipBit`             | Toggle the bit at `index` (in place).                            |
-| `testBit`             | Check if the bit at `index` is set.                              |
-| `hasAllBits`          | Check if the bitset contains every bit set in `bits`.            |
-| `hasAnyBits`          | Check if the bitset contains at least one bit set in `bits`.     |
-| `isBitsetEmpty`       | Check if no bits are set.                                        |
-| `bitsetEquals`        | Check if two bitsets have the same capacity and the same bits.   |
-| `clearBitset`         | Clear every bit (in place).                                      |
-| `cloneBitset`         | Copy a bitset.                                                   |
-| `bitsetToString`      | Binary string, most significant bit first (debugging).           |
+`bitset.equals` returns false for bitsets of different lengths. `bitset.hasAllBits` and `bitset.hasAnyBits`
+accept any lengths and treat missing words as zero. Creating all bitsets with the same capacity is still
+recommended.
+
+| Operation               | Description                                                                                              |
+|-------------------------|----------------------------------------------------------------------------------------------------------|
+| `bitset.create`         | Create an empty bitset with room for `capacity` bits.                                                    |
+| `bitset.fromIndices`    | Create a bitset with the given bit indices set.                                                          |
+| `bitset.capacity`       | Number of bits the bitset can hold (rounded up to a multiple of 32).                                     |
+| `bitset.setBit`         | Set the bit at `index` (in place).                                                                       |
+| `bitset.clearBit`       | Clear the bit at `index` (in place).                                                                     |
+| `bitset.flipBit`        | Toggle the bit at `index` (in place).                                                                    |
+| `bitset.testBit`        | Check if the bit at `index` is set; false for any index that is not a valid bit index (negative, non-integer or beyond capacity). |
+| `bitset.hasAllBits`     | Check if the bitset contains every bit set in `bits`.                                                    |
+| `bitset.hasAnyBits`     | Check if the bitset contains at least one bit set in `bits`.                                             |
+| `bitset.isEmpty`        | Check if no bits are set.                                                                                |
+| `bitset.equals`         | Check if two bitsets have the same capacity and the same bits.                                           |
+| `bitset.clear`          | Clear every bit (in place).                                                                              |
+| `bitset.clone`          | Copy a bitset.                                                                                           |
+| `bitset.toBinaryString` | Binary string, most significant bit first (debugging).                                                   |
+| `bitset.Bitset`         | Type: alias for `Uint32Array`.                                                                           |
 
 ```ts
-import { createBitset, setBit, bitsetFromIndices, hasAllBits, hasAnyBits } from "@serbanghita-gamedev/bitmask";
+import { bitset } from "@serbanghita-gamedev/bitmask";
 
 const MAX_COMPONENTS = 128;
 const POSITION = 0, VELOCITY = 1, HEALTH = 70;
 
-const entity = createBitset(MAX_COMPONENTS);
-setBit(entity, POSITION);
-setBit(entity, VELOCITY);
+const entity = bitset.create(MAX_COMPONENTS);
+bitset.setBit(entity, POSITION);
+bitset.setBit(entity, VELOCITY);
 
-const all = bitsetFromIndices([POSITION, VELOCITY], MAX_COMPONENTS);
-const none = bitsetFromIndices([HEALTH], MAX_COMPONENTS);
+const all = bitset.fromIndices([POSITION, VELOCITY], MAX_COMPONENTS);
+const none = bitset.fromIndices([HEALTH], MAX_COMPONENTS);
 
-hasAllBits(entity, all);  // true
-hasAnyBits(entity, none); // false
+bitset.hasAllBits(entity, all);  // true
+bitset.hasAnyBits(entity, none); // false
 ```
+
+## Migrating from 1.x
+
+Version 2.0 removes the flat exports. Every function lives under the `bigint` or `bitset` namespace, and the
+bitset functions no longer repeat the word `bitset` in their names. A local variable named `bitset` shadows the
+namespace, so rename the variable or import the namespace under an alias (`import { bitset as bs }`).
+
+| 1.x name            | 2.0 name                |
+|---------------------|-------------------------|
+| `addBit`            | `bigint.addBit`         |
+| `removeBit`         | `bigint.removeBit`      |
+| `hasBit`            | `bigint.hasBit`         |
+| `hasAnyOfBits`      | `bigint.hasAnyOfBits`   |
+| `toggleBit`         | `bigint.toggleBit`      |
+| `toggleAllBits`     | `bigint.toggleAllBits`  |
+| `createBitset`      | `bitset.create`         |
+| `bitsetFromIndices` | `bitset.fromIndices`    |
+| `bitsetCapacity`    | `bitset.capacity`       |
+| `setBit`            | `bitset.setBit`         |
+| `clearBit`          | `bitset.clearBit`       |
+| `flipBit`           | `bitset.flipBit`        |
+| `testBit`           | `bitset.testBit`        |
+| `hasAllBits`        | `bitset.hasAllBits`     |
+| `hasAnyBits`        | `bitset.hasAnyBits`     |
+| `isBitsetEmpty`     | `bitset.isEmpty`        |
+| `bitsetEquals`      | `bitset.equals`         |
+| `clearBitset`       | `bitset.clear`          |
+| `cloneBitset`       | `bitset.clone`          |
+| `bitsetToString`    | `bitset.toBinaryString` |
+| `Bitset` (type)     | `bitset.Bitset`         |
 
 ## Benchmarks
 

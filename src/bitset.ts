@@ -5,7 +5,9 @@
  * Index i lives in word (i >>> 5) at bit position (i & 31).
  *
  * Mutating functions change the bitset in place and never allocate.
- * Two bitsets compared with hasAllBits/hasAnyBits/equals must share the same capacity.
+ * equals returns false for bitsets of different lengths. hasAllBits and hasAnyBits accept any lengths
+ * and treat missing words as zero; creating bitsets that are used together with the same capacity is
+ * still recommended.
  */
 
 export type Bitset = Uint32Array;
