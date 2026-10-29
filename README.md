@@ -6,7 +6,7 @@
 Two representations are provided, each under its own namespace:
 
 - **`bigint`**: BigInt masks. A single arbitrary-precision integer, one bit per flag. Simple, unbounded, returns a new value on every change.
-- **`bitset`**: Uint32Array bitsets. A fixed-capacity array of 32-bit words, addressed by bit index. Mutates in place, no allocations, 2-3x faster than BigInt past 64 bits (see [Benchmarks](#benchmarks)).
+- **`bitset`**: Uint32Array bitsets. A fixed-capacity array of 32-bit words, addressed by bit index. Mutates in place, no allocations. About 2x faster than BigInt on matching at 64 components and above, and 2 to 3x faster on mutation at every size (see [Benchmarks](#benchmarks)).
 
 ```ts
 import { bigint, bitset } from "@serbanghita-gamedev/bitmask";
@@ -113,17 +113,23 @@ namespace, so rename the variable or import the namespace under an alias (`impor
 
 `npm run bench` runs `src/bitset.bench.ts` with vitest. It models the ECS hot paths at 16, 32, 64 and 128 components:
 
-- **query match** — 1000 entities x 32 queries, `none -> all -> any` evaluation
-- **mutation** — add then remove one component on 1000 entity signatures
-- **notify** — for 1000 mutations x 32 queries, test whether the component is in the query's `all`/`any`/`none`
+- **query match**: 1000 entities x 32 queries, `none -> all -> any` evaluation
+- **mutation**: add then remove one component on 1000 entity signatures
+- **notify**: for 1000 mutations x 32 queries, test whether the component is in the query's `all`/`any`/`none`
 
-Results on Node 24, Apple Silicon (higher is better, speedup of `uint32array` over `bigint`):
+Results on Node 24.22.1, arm64 (Apple Silicon). Each cell is the median speedup of `uint32array` over `bigint`
+across three runs; higher is better. The largest deviation of any single run from its cell median was 17%, so
+differences of about 0.2x are noise.
 
 | Components | Query match | Mutation | Notify |
 |-----------:|------------:|---------:|-------:|
-| 16         | 1.04x       | 2.57x    | 0.93x  |
-| 32         | 1.17x       | 2.32x    | 0.92x  |
-| 64         | 1.97x       | 2.78x    | 2.12x  |
-| 128        | 1.80x       | 2.88x    | 2.10x  |
+| 16         | 0.96x       | 2.46x    | 1.01x  |
+| 32         | 0.96x       | 2.31x    | 1.02x  |
+| 64         | 1.91x       | 2.56x    | 2.13x  |
+| 128        | 1.74x       | 2.83x    | 2.27x  |
 
-Up to 32 bits a BigInt fits in a single internal digit and V8 handles it nearly as fast as a typed array read. Past 64 bits BigInt needs multiple digits and every operation allocates, which is where the Uint32Array bitset pulls ahead.
+At 16 and 32 components the two representations are within noise on query match and notify. Mutation is 2.3x
+to 2.5x faster on the bitset at every size. At 64 and 128 components the bitset is 1.7x to 1.9x faster on query
+match, 2.1x to 2.3x faster on notify and 2.6x to 2.8x faster on mutation. The one design difference behind the
+mutation column is that a BigInt operation returns a new value on every change while the bitset writes one word
+in place; the benchmark does not isolate why the matching columns diverge at 64 components.
