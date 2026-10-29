@@ -1,5 +1,20 @@
 (() => {
+  var __defProp = Object.defineProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
   // src/bitmask.ts
+  var bitmask_exports = {};
+  __export(bitmask_exports, {
+    addBit: () => addBit,
+    hasAnyOfBits: () => hasAnyOfBits,
+    hasBit: () => hasBit,
+    removeBit: () => removeBit,
+    toggleAllBits: () => toggleAllBits,
+    toggleBit: () => toggleBit
+  });
   function addBit(bitmasks, bit) {
     bitmasks |= bit;
     return bitmasks;
@@ -29,21 +44,38 @@
   }
 
   // src/bitset.ts
+  var bitset_exports = {};
+  __export(bitset_exports, {
+    capacity: () => capacity,
+    clear: () => clear,
+    clearBit: () => clearBit,
+    clone: () => clone,
+    create: () => create,
+    equals: () => equals,
+    flipBit: () => flipBit,
+    fromIndices: () => fromIndices,
+    hasAllBits: () => hasAllBits,
+    hasAnyBits: () => hasAnyBits,
+    isEmpty: () => isEmpty,
+    setBit: () => setBit,
+    testBit: () => testBit,
+    toBinaryString: () => toBinaryString
+  });
   var WORD_BITS = 32;
-  function createBitset(capacity) {
-    if (!Number.isInteger(capacity) || capacity <= 0) {
-      throw new RangeError(`Bitset capacity must be a positive integer, got ${capacity}.`);
+  function create(capacity2) {
+    if (!Number.isInteger(capacity2) || capacity2 <= 0) {
+      throw new RangeError(`Bitset capacity must be a positive integer, got ${capacity2}.`);
     }
-    return new Uint32Array(Math.ceil(capacity / WORD_BITS));
+    return new Uint32Array(Math.ceil(capacity2 / WORD_BITS));
   }
-  function bitsetFromIndices(indices, capacity) {
-    const bitset = createBitset(capacity);
+  function fromIndices(indices, capacity2) {
+    const bitset = create(capacity2);
     for (const index of indices) {
       setBit(bitset, index);
     }
     return bitset;
   }
-  function bitsetCapacity(bitset) {
+  function capacity(bitset) {
     return bitset.length * WORD_BITS;
   }
   function assertIndex(bitset, index) {
@@ -64,6 +96,7 @@
     bitset[index >>> 5] ^= 1 << (index & 31);
   }
   function testBit(bitset, index) {
+    if (index >>> 0 !== index) return false;
     const word = bitset[index >>> 5];
     return word !== void 0 && (word & 1 << (index & 31)) !== 0;
   }
@@ -83,7 +116,7 @@
     }
     return false;
   }
-  function isBitsetEmpty(bitset) {
+  function isEmpty(bitset) {
     for (let i = 0; i < bitset.length; i++) {
       if (bitset[i] !== 0) {
         return false;
@@ -91,7 +124,7 @@
     }
     return true;
   }
-  function bitsetEquals(a, b) {
+  function equals(a, b) {
     if (a.length !== b.length) {
       return false;
     }
@@ -102,13 +135,13 @@
     }
     return true;
   }
-  function clearBitset(bitset) {
+  function clear(bitset) {
     bitset.fill(0);
   }
-  function cloneBitset(bitset) {
+  function clone(bitset) {
     return bitset.slice();
   }
-  function bitsetToString(bitset) {
+  function toBinaryString(bitset) {
     let result = "";
     for (let i = bitset.length - 1; i >= 0; i--) {
       result += bitset[i].toString(2).padStart(WORD_BITS, "0");

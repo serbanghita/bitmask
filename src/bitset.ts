@@ -5,29 +5,29 @@
  * Index i lives in word (i >>> 5) at bit position (i & 31).
  *
  * Mutating functions change the bitset in place and never allocate.
- * Two bitsets compared with hasAllBits/hasAnyBits/bitsetEquals must share the same capacity.
+ * Two bitsets compared with hasAllBits/hasAnyBits/equals must share the same capacity.
  */
 
 export type Bitset = Uint32Array;
 
 const WORD_BITS = 32;
 
-export function createBitset(capacity: number): Bitset {
+export function create(capacity: number): Bitset {
     if (!Number.isInteger(capacity) || capacity <= 0) {
         throw new RangeError(`Bitset capacity must be a positive integer, got ${capacity}.`);
     }
     return new Uint32Array(Math.ceil(capacity / WORD_BITS));
 }
 
-export function bitsetFromIndices(indices: Iterable<number>, capacity: number): Bitset {
-    const bitset = createBitset(capacity);
+export function fromIndices(indices: Iterable<number>, capacity: number): Bitset {
+    const bitset = create(capacity);
     for (const index of indices) {
         setBit(bitset, index);
     }
     return bitset;
 }
 
-export function bitsetCapacity(bitset: Bitset): number {
+export function capacity(bitset: Bitset): number {
     return bitset.length * WORD_BITS;
 }
 
@@ -76,7 +76,7 @@ export function hasAnyBits(bitset: Bitset, bits: Bitset): boolean {
     return false;
 }
 
-export function isBitsetEmpty(bitset: Bitset): boolean {
+export function isEmpty(bitset: Bitset): boolean {
     for (let i = 0; i < bitset.length; i++) {
         if (bitset[i] !== 0) {
             return false;
@@ -85,7 +85,7 @@ export function isBitsetEmpty(bitset: Bitset): boolean {
     return true;
 }
 
-export function bitsetEquals(a: Bitset, b: Bitset): boolean {
+export function equals(a: Bitset, b: Bitset): boolean {
     if (a.length !== b.length) {
         return false;
     }
@@ -97,15 +97,15 @@ export function bitsetEquals(a: Bitset, b: Bitset): boolean {
     return true;
 }
 
-export function clearBitset(bitset: Bitset): void {
+export function clear(bitset: Bitset): void {
     bitset.fill(0);
 }
 
-export function cloneBitset(bitset: Bitset): Bitset {
+export function clone(bitset: Bitset): Bitset {
     return bitset.slice();
 }
 
-export function bitsetToString(bitset: Bitset): string {
+export function toBinaryString(bitset: Bitset): string {
     let result = "";
     for (let i = bitset.length - 1; i >= 0; i--) {
         result += bitset[i].toString(2).padStart(WORD_BITS, "0");

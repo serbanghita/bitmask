@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 import { addBit, hasAnyOfBits, hasBit, removeBit } from "./bitmask.ts";
-import { hasAllBits, hasAnyBits, isBitsetEmpty, setBit, clearBit, bitsetFromIndices, type Bitset } from "./bitset.ts";
+import { hasAllBits, hasAnyBits, isEmpty, setBit, clearBit, fromIndices, type Bitset } from "./bitset.ts";
 
 /**
  * Benchmarks for serbanghita/ecs#10: BigInt masks vs segmented Uint32Array bitsets.
@@ -100,14 +100,14 @@ for (const componentCount of COMPONENT_COUNTS) {
     }));
     const bigIntComponentBits = scenario.mutations.map((m) => 1n << BigInt(m.component));
 
-    const bitsetEntities = scenario.entityIndices.map((indices) => bitsetFromIndices(indices, componentCount));
+    const bitsetEntities = scenario.entityIndices.map((indices) => fromIndices(indices, componentCount));
     const bitsetQueries: BitsetQuery[] = scenario.queryIndices.map((q) => {
-        const all = bitsetFromIndices(q.all, componentCount);
-        const any = bitsetFromIndices(q.any, componentCount);
-        const none = bitsetFromIndices(q.none, componentCount);
-        return { all, any, none, hasAll: !isBitsetEmpty(all), hasAny: !isBitsetEmpty(any), hasNone: !isBitsetEmpty(none) };
+        const all = fromIndices(q.all, componentCount);
+        const any = fromIndices(q.any, componentCount);
+        const none = fromIndices(q.none, componentCount);
+        return { all, any, none, hasAll: !isEmpty(all), hasAny: !isEmpty(any), hasNone: !isEmpty(none) };
     });
-    const bitsetComponentMasks = scenario.mutations.map((m) => bitsetFromIndices([m.component], componentCount));
+    const bitsetComponentMasks = scenario.mutations.map((m) => fromIndices([m.component], componentCount));
 
     describe(`${componentCount} components: query match (${ENTITIES} entities x ${QUERIES} queries)`, () => {
         bench("bigint", () => {

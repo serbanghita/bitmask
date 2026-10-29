@@ -1,2 +1,2 @@
-export * from "./bitmask.ts";
-export * from "./bitset.ts";
+export * as bigint from "./bitmask.ts";
+export * as bitset from "./bitset.ts";

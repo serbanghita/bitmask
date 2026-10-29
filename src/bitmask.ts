@@ -74,7 +74,7 @@ export function hasAnyOfBits(bitmask: bigint, bits: bigint): boolean {
 
 
 
-type Bitmask = number | bigint;
+export type Bitmask = number | bigint;
 
 // https://github.com/microsoft/TypeScript/issues/42125
 // https://github.com/microsoft/TypeScript/issues/39569#issuecomment-657235599
