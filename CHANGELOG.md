@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.0.0] - 2026-10-29
 
 ### Changed
 - **Breaking:** all functions are reached through the `bigint` and `bitset` namespaces (`import { bigint, bitset } from "@serbanghita-gamedev/bitmask"`); the flat exports are removed and the bitset functions no longer repeat the word `bitset` in their names. Migration:
