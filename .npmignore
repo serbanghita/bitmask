@@ -24,3 +24,6 @@ coverage/
 
 # Benchmarks
 src/**/*.bench.ts
+
+# Plans
+.planning/

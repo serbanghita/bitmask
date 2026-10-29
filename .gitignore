@@ -1,3 +1,5 @@
 node_modules
 coverage
 .idea
+.planning
+.claude/plan-critique-config.json

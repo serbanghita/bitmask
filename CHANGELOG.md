@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- **Breaking:** all functions are reached through the `bigint` and `bitset` namespaces (`import { bigint, bitset } from "@serbanghita-gamedev/bitmask"`); the flat exports are removed and the bitset functions no longer repeat the word `bitset` in their names. Migration:
+
+| 1.x name            | 2.0 name                |
+|---------------------|-------------------------|
+| `addBit`            | `bigint.addBit`         |
+| `removeBit`         | `bigint.removeBit`      |
+| `hasBit`            | `bigint.hasBit`         |
+| `hasAnyOfBits`      | `bigint.hasAnyOfBits`   |
+| `toggleBit`         | `bigint.toggleBit`      |
+| `toggleAllBits`     | `bigint.toggleAllBits`  |
+| `createBitset`      | `bitset.create`         |
+| `bitsetFromIndices` | `bitset.fromIndices`    |
+| `bitsetCapacity`    | `bitset.capacity`       |
+| `setBit`            | `bitset.setBit`         |
+| `clearBit`          | `bitset.clearBit`       |
+| `flipBit`           | `bitset.flipBit`        |
+| `testBit`           | `bitset.testBit`        |
+| `hasAllBits`        | `bitset.hasAllBits`     |
+| `hasAnyBits`        | `bitset.hasAnyBits`     |
+| `isBitsetEmpty`     | `bitset.isEmpty`        |
+| `bitsetEquals`      | `bitset.equals`         |
+| `clearBitset`       | `bitset.clear`          |
+| `cloneBitset`       | `bitset.clone`          |
+| `bitsetToString`    | `bitset.toBinaryString` |
+| `Bitset` (type)     | `bitset.Bitset`         |
+
+- Notify benchmark tests membership with `bitset.testBit` instead of a one-bit mask loop; README benchmark table is now the median of three runs with the environment and spread stated, and the V8 digit-size explanation is dropped
+- Docs no longer require equal capacity for `hasAllBits` and `hasAnyBits`; only `equals` is length-sensitive, missing words read as zero
+
+### Fixed
+- `testBit` returned the wrong bit for non-integer indices, `NaN`, `Infinity`, `-Infinity`, and indices at or above 2^32 or at or below -2^32; it now returns false
+- `Bitmask` type is now exported (as `bigint.Bitmask`)
+
 ## [1.3.0] - 2026-10-28
 
 ### Added
