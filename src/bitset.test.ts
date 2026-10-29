@@ -138,3 +138,12 @@ test('bitsetToString', () => {
     expect(bitsetToString(bitsetFromIndices([32], 64))).toBe("0".repeat(31) + "1" + "0".repeat(32));
     expect(bitsetToString(bitsetFromIndices([0, 63], 64))).toBe("1" + "0".repeat(62) + "1");
 });
+
+test('testBit returns false for invalid indices', () => {
+    const bitset = bitsetFromIndices([0, 1], 64);
+    for (const index of [1.5, 0.5, 2 ** 32, 2 ** 32 + 1, -(2 ** 32), NaN, Infinity, -Infinity, -1, Number.MAX_SAFE_INTEGER]) {
+        expect(testBit(bitset, index), `index ${index}`).toBe(false);
+    }
+    expect(testBit(bitset, -0)).toBe(true);
+    expect(testBit(bitset, 0)).toBe(true);
+});

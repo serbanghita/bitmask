@@ -53,6 +53,7 @@ export function flipBit(bitset: Bitset, index: number): void {
 }
 
 export function testBit(bitset: Bitset, index: number): boolean {
+    if ((index >>> 0) !== index) return false;
     const word = bitset[index >>> 5];
     return word !== undefined && (word & (1 << (index & 31))) !== 0;
 }
