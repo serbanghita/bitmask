@@ -102,7 +102,7 @@
   }
   function hasAllBits(bitset, bits) {
     for (let i = 0; i < bits.length; i++) {
-      if ((bitset[i] & bits[i]) !== bits[i]) {
+      if ((bitset[i] & bits[i]) !== (bits[i] | 0)) {
         return false;
       }
     }

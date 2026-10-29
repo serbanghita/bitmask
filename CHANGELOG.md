@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.1] - 2026-10-29
+
+### Fixed
+- `bitset.hasAllBits` returned false whenever the required bits included bit 31 of a word (indices 31, 63, 95, ...): the `&` result is a signed int32 while the `Uint32Array` word is unsigned, so the comparison never matched
+
 ## [2.0.0] - 2026-10-29
 
 ### Changed

@@ -62,7 +62,7 @@ export function testBit(bitset: Bitset, index: number): boolean {
 
 export function hasAllBits(bitset: Bitset, bits: Bitset): boolean {
     for (let i = 0; i < bits.length; i++) {
-        if ((bitset[i] & bits[i]) !== bits[i]) {
+        if ((bitset[i] & bits[i]) !== (bits[i] | 0)) {
             return false;
         }
     }

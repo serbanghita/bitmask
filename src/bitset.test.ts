@@ -98,6 +98,21 @@ test('hasAllBits', () => {
     expect(hasAllBits(entity, create(96))).toBe(true);
 });
 
+test('hasAllBits and hasAnyBits with the sign bit (31, 63, 95) set', () => {
+    const entity = fromIndices([31, 63, 95], 96);
+
+    expect(hasAllBits(entity, fromIndices([31], 96))).toBe(true);
+    expect(hasAllBits(entity, fromIndices([63], 96))).toBe(true);
+    expect(hasAllBits(entity, fromIndices([31, 63, 95], 96))).toBe(true);
+    expect(hasAllBits(entity, fromIndices([31, 30], 96))).toBe(false);
+    expect(hasAllBits(fromIndices([30], 96), fromIndices([31], 96))).toBe(false);
+    expect(hasAnyBits(entity, fromIndices([31], 96))).toBe(true);
+    expect(hasAnyBits(entity, fromIndices([95], 96))).toBe(true);
+    expect(hasAnyBits(entity, fromIndices([0, 30, 62], 96))).toBe(false);
+    expect(testBit(entity, 31)).toBe(true);
+    expect(testBit(entity, 95)).toBe(true);
+});
+
 test('hasAnyBits', () => {
     const entity = fromIndices([0, 2, 3, 40], 64);
 
