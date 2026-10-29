@@ -1,6 +1,6 @@
 import { bench, describe } from "vitest";
 import { addBit, hasAnyOfBits, hasBit, removeBit } from "./bitmask.ts";
-import { hasAllBits, hasAnyBits, isEmpty, setBit, clearBit, fromIndices, type Bitset } from "./bitset.ts";
+import { hasAllBits, hasAnyBits, isEmpty, setBit, clearBit, fromIndices, testBit, type Bitset } from "./bitset.ts";
 
 /**
  * Benchmarks for serbanghita/ecs#10: BigInt masks vs segmented Uint32Array bitsets.
@@ -99,6 +99,7 @@ for (const componentCount of COMPONENT_COUNTS) {
         none: toBigInt(q.none),
     }));
     const bigIntComponentBits = scenario.mutations.map((m) => 1n << BigInt(m.component));
+    const componentIndices = scenario.mutations.map((m) => m.component);
 
     const bitsetEntities = scenario.entityIndices.map((indices) => fromIndices(indices, componentCount));
     const bitsetQueries: BitsetQuery[] = scenario.queryIndices.map((q) => {
@@ -107,7 +108,6 @@ for (const componentCount of COMPONENT_COUNTS) {
         const none = fromIndices(q.none, componentCount);
         return { all, any, none, hasAll: !isEmpty(all), hasAny: !isEmpty(any), hasNone: !isEmpty(none) };
     });
-    const bitsetComponentMasks = scenario.mutations.map((m) => fromIndices([m.component], componentCount));
 
     describe(`${componentCount} components: query match (${ENTITIES} entities x ${QUERIES} queries)`, () => {
         bench("bigint", () => {
@@ -169,11 +169,11 @@ for (const componentCount of COMPONENT_COUNTS) {
 
         bench("uint32array", () => {
             let hits = 0;
-            for (let i = 0; i < bitsetComponentMasks.length; i++) {
-                const mask = bitsetComponentMasks[i];
+            for (let i = 0; i < componentIndices.length; i++) {
+                const component = componentIndices[i];
                 for (let q = 0; q < bitsetQueries.length; q++) {
                     const query = bitsetQueries[q];
-                    if (hasAnyBits(query.none, mask) || hasAnyBits(query.all, mask) || hasAnyBits(query.any, mask)) hits++;
+                    if (testBit(query.none, component) || testBit(query.all, component) || testBit(query.any, component)) hits++;
                 }
             }
             sink += hits;
